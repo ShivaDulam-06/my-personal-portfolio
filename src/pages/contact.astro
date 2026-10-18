@@ -1,0 +1,301 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+---
+
+<Layout
+  title="Contact — Shiva Dulam"
+  description="Contact Shiva Dulam about electronics and embedded systems projects, collaborations, internships, or opportunities. Reach out via the contact form, GitHub, LinkedIn, or email."
+>
+  <div class="page-header">
+    <h1>Contact</h1>
+    <p class="subtitle">Get in touch about projects, collaboration, or opportunities.</p>
+  </div>
+
+  <div class="contact-layout">
+    <div class="contact-form-section">
+      <form
+        id="contact-form"
+        action={site.formspreeEndpoint}
+        method="POST"
+        class="contact-form"
+      >
+        <input type="hidden" name="_subject" value="New message from portfolio contact form" />
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required placeholder="Your name" />
+        </div>
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com" />
+        </div>
+        <div class="form-field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Your message"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary form-submit">Send Message</button>
+      </form>
+
+      <div id="form-error" class="form-error" hidden>
+        <p>Something went wrong sending your message. Please try again, or email me directly.</p>
+      </div>
+
+      <div id="modal-overlay" class="modal-overlay" hidden>
+        <div class="modal-backdrop"></div>
+        <div id="thank-you" class="thank-you" role="dialog" aria-modal="true" aria-labelledby="thank-you-title">
+          <div class="thank-you-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+          </div>
+          <h2 id="thank-you-title">Thanks for reaching out</h2>
+          <p>I'll get back to you soon.</p>
+          <button type="button" id="send-another" class="btn btn-outline">Send another message</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="contact-links">
+      <h2>Connect</h2>
+      <a href={site.github} target="_blank" rel="noopener noreferrer" class="contact-link">
+        <span class="contact-link-label">GitHub</span>
+        <span class="contact-link-arrow">&rarr;</span>
+      </a>
+      <a href={site.linkedin} target="_blank" rel="noopener noreferrer" class="contact-link">
+        <span class="contact-link-label">LinkedIn</span>
+        <span class="contact-link-arrow">&rarr;</span>
+      </a>
+      <a href={`mailto:${site.email}`} class="contact-link">
+        <span class="contact-link-label">Email</span>
+        <span class="contact-link-arrow">&rarr;</span>
+      </a>
+    </aside>
+  </div>
+</Layout>
+
+<style>
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .contact-form-section {
+    position: relative;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .form-field input,
+  .form-field textarea {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--text-primary);
+    background: var(--navy-800);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    transition: border-color 0.2s ease;
+    resize: vertical;
+  }
+
+  .form-field input::placeholder,
+  .form-field textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .form-submit {
+    align-self: flex-start;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: overlay-in 0.18s ease-out;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 16, 28, 0.72);
+    backdrop-filter: blur(2px);
+    border-radius: var(--radius-lg);
+  }
+
+  .thank-you {
+    position: relative;
+    text-align: center;
+    padding: 36px 28px;
+    background: var(--bg-card);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    max-width: 420px;
+    width: 100%;
+    animation: modal-in 0.22s ease-out;
+  }
+
+  @keyframes overlay-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .form-error {
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--error, var(--border));
+    border-radius: var(--radius);
+    margin-top: 16px;
+  }
+
+  .form-error p {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .form-submit.loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .thank-you-icon {
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .thank-you h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .thank-you p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .contact-links h2 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .contact-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .contact-link:hover {
+    border-color: var(--border-hover);
+    color: var(--accent);
+  }
+
+  .contact-link-arrow {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  .contact-link:hover .contact-link-arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 700px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const modalOverlay = document.getElementById('modal-overlay');
+  const formError = document.getElementById('form-error');
+  const submitBtn = form?.querySelector('.form-submit') as HTMLButtonElement | null;
+  const sendAnother = document.getElementById('send-another');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!submitBtn) return;
+    submitBtn.classList.add('loading');
+    submitBtn.textContent = 'Sending…';
+    formError?.setAttribute('hidden', '');
+
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+
+      if (res.ok) {
+        modalOverlay?.removeAttribute('hidden');
+      } else {
+        formError?.removeAttribute('hidden');
+      }
+    } catch {
+      formError?.removeAttribute('hidden');
+    } finally {
+      submitBtn.classList.remove('loading');
+      submitBtn.textContent = 'Send Message';
+    }
+  });
+
+  sendAnother?.addEventListener('click', () => {
+    modalOverlay?.setAttribute('hidden', '');
+    form?.reset();
+  });
+</script>

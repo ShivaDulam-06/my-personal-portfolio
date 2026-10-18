@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { projects } from '../data/projects';
+import { site } from '../data/site';
+
+const statusClass = (status: string) => {
+  if (status === 'In progress') return 'badge-status--in-progress';
+  if (status === 'Completed') return 'badge-status--completed';
+  return 'badge-status--coming-soon';
+};
+---
+
+<Layout
+  title="Selected Projects — Shiva Dulam"
+  description="Selected electronics and embedded systems projects by Shiva Dulam — STM32 and ESP32 firmware, sensor interfacing, real-time systems, IoT, and PCB design work, with project status and technologies used."
+>
+  <div class="page-header">
+    <h1>Selected Projects</h1>
+    <p class="subtitle">
+      A growing collection of embedded systems and electronics projects. More will be added as work
+      progresses.
+    </p>
+  </div>
+
+  <div class="projects-grid">
+    {projects.map((project) => (
+      <article class="project-card">
+        <div class="project-header">
+          <h3>{project.title}</h3>
+          <span class={`badge-status ${statusClass(project.status)}`}>{project.status}</span>
+        </div>
+        <p class="project-desc">{project.description}</p>
+        <div class="project-tech">
+          {project.tech.map((t) => (
+            <span class="badge">{t}</span>
+          ))}
+        </div>
+        <div class="project-footer">
+          <a href={site.github} target="_blank" rel="noopener noreferrer" class="github-link">Follow progress on GitHub <span class="arrow">&rarr;</span></a>
+        </div>
+      </article>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.25s ease;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent-border);
+    background: var(--bg-card-hover);
+    box-shadow: 0 0 0 1px var(--accent-border), 0 4px 20px rgba(126, 160, 204, 0.08);
+  }
+
+  .project-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .project-header h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .project-footer {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+
+  .project-card:hover .project-footer {
+    opacity: 1;
+  }
+
+  .github-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .github-link:hover {
+    color: var(--accent-hover);
+  }
+
+  .github-link .arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .project-card:hover .github-link .arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 640px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

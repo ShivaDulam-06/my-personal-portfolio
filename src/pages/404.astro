@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const notFoundTitle = 'Page Not Found — Shiva Dulam';
+const notFoundDescription =
+  'The page you were looking for could not be found. Return to the homepage to explore Shiva Dulam\u2019s electronics and embedded systems portfolio.';
+---
+
+<Layout title={notFoundTitle} description={notFoundDescription}>
+  <section class="not-found">
+    <div class="not-found-visual" aria-hidden="true">
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none">
+        <rect x="34" y="34" width="28" height="28" rx="4" stroke="#7ea0cc" stroke-width="2" />
+        <rect x="44" y="44" width="8" height="8" rx="1" fill="#7ea0cc" />
+        <path
+          d="M40 34v-8M48 34v-10M56 34v-8M40 62v8M48 62v10M56 62v8M34 40h-8M34 48h-10M34 56h-8M62 40h8M62 48h10M62 56h8"
+          stroke="#7ea0cc"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        />
+      </svg>
+    </div>
+    <h1 class="not-found-code">404</h1>
+    <p class="not-found-message">
+      The page you were looking for could not be found. It may have been moved or never existed.
+    </p>
+    <a href="/" class="btn btn-primary not-found-link">Back to Home</a>
+  </section>
+</Layout>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 56px 0 72px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .not-found-visual {
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0.9;
+  }
+
+  .not-found-code {
+    font-size: 64px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+
+  .not-found-message {
+    margin-top: 16px;
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .not-found-link {
+    margin-top: 32px;
+  }
+
+  @media (max-width: 600px) {
+    .not-found {
+      padding: 32px 0 56px;
+    }
+
+    .not-found-code {
+      font-size: 48px;
+    }
+
+    .not-found-message {
+      font-size: 15px;
+    }
+  }
+</style>

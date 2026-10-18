@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+
+const homeTitle = 'Shiva Dulam — Electronics & Embedded Systems Engineer';
+const homeDescription =
+  'Portfolio of Shiva Dulam, an electronics and embedded systems engineer working on microcontrollers, firmware, IoT, edge AI, and PCB design. Hands-on STM32 and ESP32 hardware and software projects.';
+---
+
+<Layout title={homeTitle} description={homeDescription}>
+  <section class="hero">
+    <p class="hero-eyebrow">Portfolio</p>
+    <h1>{site.name}</h1>
+    <p class="hero-title">{site.title}</p>
+    <span class="status-pill">Open to internships &amp; opportunities</span>
+    <div class="hero-domains">
+      <span class="domain-tag">Embedded Systems</span>
+      <span class="domain-tag">IoT &amp; Edge AI</span>
+      <span class="domain-tag">PCB Design</span>
+    </div>
+    <p class="hero-intro">
+      I'm currently building my skills and working on hands-on projects across three core domains —
+      embedded firmware, IoT connectivity, and PCB design — with a growing focus on edge AI and
+      TinyML for resource-constrained devices. My focus is on understanding systems from the circuit
+      board up through the code that runs on it.
+    </p>
+    <div class="hero-actions">
+      <a href="/projects" class="btn btn-primary">View Projects</a>
+      <a href="/contact" class="btn btn-outline">Contact</a>
+    </div>
+  </section>
+
+  <section class="hero-cards">
+    <div class="hero-card">
+      <h3>Currently Learning</h3>
+      <p>Embedded systems, firmware development, and PCB design for microcontroller-based projects.</p>
+    </div>
+    <div class="hero-card">
+      <h3>Building Projects</h3>
+      <p>Hands-on work with STM32, ESP32, and real-time operating systems — see the Projects page.</p>
+    </div>
+    <div class="hero-card">
+      <h3>Long-Term Goal</h3>
+      <p>To design reliable embedded systems that bridge hardware and software for real-world applications.</p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    padding: 32px 0 48px;
+    max-width: 640px;
+  }
+
+  .hero-eyebrow {
+    font-size: 13px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    line-height: 1.15;
+  }
+
+  .hero-title {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
+
+  .status-pill {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 5px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-muted);
+    border: 1px solid var(--accent-border);
+    border-radius: 100px;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-domains {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .domain-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    transition: border-color 0.2s ease, box-shadow 0.25s ease, color 0.2s ease;
+  }
+
+  .domain-tag:hover {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 0 1px var(--accent-border), 0 2px 12px rgba(126, 160, 204, 0.08);
+    color: var(--accent-hover);
+  }
+
+  .hero-intro {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-top: 28px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .hero-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .hero-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: border-color 0.2s ease;
+  }
+
+  .hero-card:hover {
+    border-color: var(--border-hover);
+  }
+
+  .hero-card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .hero-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 16px 0 36px;
+    }
+
+    .hero h1 {
+      font-size: 30px;
+    }
+
+    .hero-title {
+      font-size: 16px;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+    }
+
+    .hero-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
