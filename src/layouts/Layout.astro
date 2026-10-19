@@ -5,6 +5,7 @@ interface Props {
   title?: string;
   description?: string;
   hideCanonical?: boolean;
+  googleSiteVerification?: string;
 }
 
 const pageTitle = Astro.props.title ?? `${site.name} — ${site.title}`;
@@ -23,6 +24,9 @@ const canonicalUrl = new URL(normalizedPath, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    {Astro.props.googleSiteVerification && (
+      <meta name="google-site-verification" content={Astro.props.googleSiteVerification} />
+    )}
     <meta name="description" content={pageDescription} />
     <title>{pageTitle}</title>
     <meta property="og:type" content="website" />
