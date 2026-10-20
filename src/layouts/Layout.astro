@@ -6,6 +6,7 @@ interface Props {
   description?: string;
   hideCanonical?: boolean;
   googleSiteVerification?: string;
+  jsonLd?: string;
 }
 
 const pageTitle = Astro.props.title ?? `${site.name} — ${site.title}`;
@@ -44,6 +45,9 @@ const canonicalUrl = new URL(normalizedPath, Astro.site).href;
     )}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {Astro.props.jsonLd && (
+      <script type="application/ld+json" set:html={Astro.props.jsonLd} />
+    )}
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"

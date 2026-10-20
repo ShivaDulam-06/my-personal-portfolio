@@ -5,12 +5,21 @@ import { site } from '../data/site';
 const homeTitle = 'Shiva Dulam — Electronics & Embedded Systems Engineer';
 const homeDescription =
   'Portfolio of Shiva Dulam, an electronics and embedded systems engineer working on microcontrollers, firmware, IoT, edge AI, and PCB design. Hands-on STM32 and ESP32 hardware and software projects.';
+
+const websiteJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Shiva Dulam',
+  alternateName: ['Shiva Dulam Portfolio', 'shivadulam.is-a.dev'],
+  url: 'https://shivadulam.is-a.dev/',
+});
 ---
 
 <Layout
   title={homeTitle}
   description={homeDescription}
   googleSiteVerification="2sdbvBRyX-yYWH2eCiqGZWJvKgCUbXmEyKeeWWmoYmU"
+  jsonLd={websiteJsonLd}
 >
   <section class="hero">
     <p class="hero-eyebrow">Portfolio</p>
