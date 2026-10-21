@@ -23,7 +23,8 @@ const canonicalUrl = new URL(normalizedPath, Astro.site).href;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+   <link rel="icon" type="image/png" sizes="96x96" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
     {Astro.props.googleSiteVerification && (
       <meta name="google-site-verification" content={Astro.props.googleSiteVerification} />
