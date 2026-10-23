@@ -6,9 +6,9 @@
 
 export const site = {
   name: 'Shiva Dulam',
-  title: 'Electronics & Embedded Systems Engineer',
+  title: 'Electronics, Embedded Systems & PCB Engineer',
   description:
-    'Portfolio of Shiva Dulam, an electronics and embedded systems engineer currently building skills and projects in microcontrollers, firmware, and hardware design.',
+    'Portfolio of Shiva Dulam, an Electronics,PCB and Embedded Systems Engineer currently building skills and projects in microcontrollers, firmware, and hardware design.',
   // --- Contact links ---
   email: 'shivadulam6@gmail.com',
   github: 'https://github.com/ShivaDulam-06',
