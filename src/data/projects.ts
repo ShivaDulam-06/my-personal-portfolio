@@ -12,23 +12,34 @@
 //   link        — Optional: URL to this project's own repo/demo.
 //                 If omitted, the card falls back to the general
 //                 GitHub profile link.
-//   featured    — Optional: marks a project for the expanded,
-//                 two-column layout on the Projects page and the
-//                 "Featured Engineering Work" card on the homepage.
-//   anchor      — Optional: id used to deep-link to a specific
-//                 project card (e.g. /projects#smart-agriculture).
-//   stack       — Optional: structured technology stack for the
-//                 featured project, grouped by category.
-//   overview    — Optional: a fuller technical overview shown on
-//                 the featured card (separate from the short
-//                 description used by the standard cards).
-//   simulationNote — Optional: explicit simulation disclosures
-//                 shown on the featured card.
+//   featured    — Optional: marks the project shown in the homepage
+//                 "Featured Engineering Work" section.
+//   anchor      — Optional: id used to deep-link to a project card.
+//   hasDetails  — Optional: when true, the card shows a "View
+//                 Details" trigger that opens the reusable modal.
+//                 Only set this when genuine, documented detail
+//                 content exists — never fabricate details.
+//   detail      — Optional: structured sections rendered inside the
+//                 project-detail modal (objectives, architecture,
+//                 hardwareInterfaces, firmwareImplementation,
+//                 learningOutcomes). Reused alongside overview,
+//                 stack, and simulationNote.
+//   stack       — Optional: structured technology stack, grouped.
+//   overview    — Optional: fuller technical overview for the modal.
+//   simulationNote — Optional: explicit simulation disclosures.
 // =================================================================
 
 export interface TechGroup {
   label: string;
   items: string[];
+}
+
+export interface ProjectDetail {
+  objectives?: string;
+  architecture?: string;
+  hardwareInterfaces?: string;
+  firmwareImplementation?: string;
+  learningOutcomes?: string[];
 }
 
 export interface Project {
@@ -39,6 +50,8 @@ export interface Project {
   link?: string;
   featured?: boolean;
   anchor?: string;
+  hasDetails?: boolean;
+  detail?: ProjectDetail;
   stack?: TechGroup[];
   overview?: string;
   simulationNote?: string[];
@@ -54,8 +67,25 @@ export const projects: Project[] = [
     link: 'https://github.com/ShivaDulam-06/upskillcampus',
     featured: true,
     anchor: 'smart-agriculture',
+    hasDetails: true,
     overview:
       'An ESP32-based sensor node built and simulated in Wokwi. The firmware samples a DHT22 for temperature and humidity, an LDR module for ambient light, and a potentiometer that stands in for the FC-28 soil-moisture sensor. Each reading is timestamped by a DS1307 RTC and shown on a 20x4 I2C LCD. When the soil reading crosses a dryness threshold, the ESP32 drives a relay module to switch a simulated water pump, with an orange LED acting as a pump-on indicator.',
+    detail: {
+      objectives:
+        'Build a self-contained ESP32 sensor node that monitors key agricultural parameters — soil moisture, ambient light, temperature, and humidity — and performs local, on-device control of a water pump without relying on cloud connectivity. The project was developed as a UCT internship submission and simulated end-to-end in Wokwi.',
+      architecture:
+        'The ESP32 is the central controller. Three input devices feed it environmental data: a DHT22 (temperature and humidity) on a digital pin, an LDR module (ambient light) on an analog pin, and a potentiometer (standing in for the FC-28 soil-moisture sensor) on a second analog pin. A DS1307 real-time clock and a 20x4 I2C LCD share the same I2C bus (SDA/SCL) so every reading can be timestamped and displayed live. The ESP32 drives a relay module from a digital output to switch the simulated water pump, with an orange LED on the relay COM line acting as a pump-on indicator and a red LED marking a low-light condition.',
+      hardwareInterfaces:
+        'DHT22 — single-wire digital input for temperature and humidity. LDR module — analog voltage read by the ESP32 ADC, converted using the ESP32\u2019s 12-bit ADC characteristics and the standard photoresistor resistance/lux relationship, then bucketed into Low / Medium / High. Potentiometer (FC-28 proxy) — analog voltage representing soil wetness; Wokwi has no FC-28 component, so the potentiometer produces the same voltage swing a real FC-28 probe would. DS1307 RTC — I2C, provides timestamps for each reading. 20x4 I2C LCD — I2C, displays live sensor status and pump state. Relay module — digital output from the ESP32 switches the relay; the relay COM line drives the simulated pump and the orange pump-on indicator LED. A red LED on a separate digital output indicates low ambient light.',
+      firmwareImplementation:
+        'Written in Arduino C++ using the LiquidCrystal I2C, DHT sensor, and RTClib libraries, plus a small FC28 driver (FC28.cpp / FC28.h). The main sketch (main.ino) runs a loop that samples each sensor, timestamps the reading with the RTC, updates the 20x4 LCD, and evaluates a soil-moisture threshold: when the soil reading crosses the dryness threshold the firmware energizes the relay to start the pump, and de-energizes it once the reading returns to an acceptable range. The FC28 driver documents an important convention \u2014 getSoilMoisture() returns a higher percentage for drier soil, not wetter, matching how the sensor is wired as a voltage divider; the pump logic is written against that convention and the behavior is noted in FC28.h so it is not mistaken for a bug. The Wokwi circuit and wiring are defined in diagram.json, and libraries.txt lists the dependencies Wokwi loads at simulation time.',
+      learningOutcomes: [
+        'Interfacing multiple mixed-signal sensors (digital, analog, I2C) with a single microcontroller and sharing an I2C bus between two devices.',
+        'Designing threshold-based local control logic that runs entirely on-device, with no dependency on network connectivity.',
+        'Working around simulator limitations by substituting a potentiometer for an unavailable component while keeping the firmware pin-compatible with the real sensor.',
+        'Documenting a non-obvious sensor convention (drier-soil returns a higher percentage) inside the driver header so it is not treated as a bug.',
+      ],
+    },
     stack: [
       { label: 'Board', items: ['ESP32'] },
       { label: 'Language / Framework', items: ['Arduino C++'] },

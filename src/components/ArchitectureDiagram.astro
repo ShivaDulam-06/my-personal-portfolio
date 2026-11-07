@@ -1,0 +1,225 @@
+---
+// Reusable inline SVG system-architecture diagram for the Smart
+// Agriculture Monitoring System. Renders a compact variant (for
+// project cards) or an expanded variant (for the detail modal).
+// No invented GPIO numbers or undocumented connections — signal
+// paths reflect the documented Wokwi simulation only.
+
+interface Props {
+  variant?: 'compact' | 'expanded';
+}
+
+const { variant = 'compact' } = Astro.props;
+const isExpanded = variant === 'expanded';
+
+// Expand the viewBox slightly for the modal variant so labels have
+// more breathing room; the compact variant keeps everything tighter.
+const viewBox = isExpanded ? '0 0 380 320' : '0 0 360 300';
+const labelOffsetX = isExpanded ? 10 : 0;
+---
+
+<div class:list={['arch-diagram', `arch-diagram--${variant}`]}>
+  <svg
+    viewBox={viewBox}
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="Simulation architecture diagram for the ESP32-based Smart Agriculture Monitoring System"
+    class="arch-svg"
+  >
+    <title>Simulation Architecture</title>
+
+    {/* Signal bus lines */}
+    <g stroke="rgba(126,160,204,0.35)" stroke-width="1.2" fill="none">
+      {/* DHT22 -> ESP32 (digital) */}
+      <path d="M70 58 H150 V120" />
+      {/* LDR -> ESP32 (analog) */}
+      <path d="M70 140 H150" />
+      {/* Pot/FC-28 -> ESP32 (analog) */}
+      <path d="M70 222 H150 V160" />
+      {/* I2C bus: ESP32 <-> RTC and LCD */}
+      <path d="M210 120 H300 V58" />
+      <path d="M210 140 H300 V222" />
+      {/* ESP32 -> Relay (digital out) */}
+      <path d="M210 160 H300 V160" stroke-dasharray="3 3" />
+    </g>
+
+    {/* Connection endpoint dots */}
+    <g fill="rgba(126,160,204,0.7)">
+      <circle cx="150" cy="120" r="2.5" />
+      <circle cx="150" cy="140" r="2.5" />
+      <circle cx="150" cy="160" r="2.5" />
+      <circle cx="210" cy="120" r="2.5" />
+      <circle cx="210" cy="140" r="2.5" />
+      <circle cx="210" cy="160" r="2.5" />
+    </g>
+
+    {/* Line labels */}
+    <g font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(155,184,216,0.75)">
+      <text x={96 + labelOffsetX} y="52">digital</text>
+      <text x={96 + labelOffsetX} y="134">analog</text>
+      <text x={90 + labelOffsetX} y="216">analog</text>
+      <text x={232 + labelOffsetX} y="114">I2C</text>
+      <text x={232 + labelOffsetX} y="216">I2C</text>
+      <text x={232 + labelOffsetX} y="154">GPIO</text>
+    </g>
+
+    {/* DHT22 */}
+    <g>
+      <rect x="18" y="42" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+      <text x="44" y="58" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">DHT22</text>
+      <text x="44" y="68" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">temp/humidity</text>
+    </g>
+
+    {/* LDR */}
+    <g>
+      <rect x="18" y="124" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+      <text x="44" y="140" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">LDR</text>
+      <text x="44" y="150" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">ambient light</text>
+    </g>
+
+    {/* Potentiometer (FC-28 proxy) */}
+    <g>
+      <rect x="18" y="206" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+      <text x="44" y="222" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">Pot</text>
+      <text x="44" y="232" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">FC-28 proxy</text>
+    </g>
+
+    {/* ESP32 (center) */}
+    <g>
+      <rect x="150" y="116" width="60" height="48" rx="6" fill="rgba(126,160,204,0.14)" stroke="rgba(126,160,204,0.6)" stroke-width="1.3" />
+      <text x="180" y="138" text-anchor="middle" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#d2d8e0">ESP32</text>
+      <text x="180" y="150" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">firmware</text>
+    </g>
+
+    {/* DS1307 RTC */}
+    <g>
+      <rect x="300" y="42" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+      <text x="326" y="58" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">DS1307</text>
+      <text x="326" y="68" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">RTC</text>
+    </g>
+
+    {/* 20x4 I2C LCD */}
+    <g>
+      <rect x="300" y="206" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+      <text x="326" y="222" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">LCD</text>
+      <text x="326" y="232" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">20x4 I2C</text>
+    </g>
+
+    {/* Relay + pump indicator */}
+    <g>
+      <rect x="300" y="144" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" stroke-dasharray="3 2" />
+      <text x="326" y="160" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">Relay</text>
+      <text x="326" y="170" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">pump drive</text>
+    </g>
+  </svg>
+
+  <div class="arch-legend">
+    <p class="arch-caption">Simulation Architecture</p>
+    <ul class="arch-legend-list">
+      <li><span class="arch-key arch-key--solid"></span> Component</li>
+      <li><span class="arch-key arch-key--dashed"></span> Relay output (pump drive)</li>
+      <li><span class="arch-line arch-line--solid"></span> Digital / analog signal</li>
+      <li><span class="arch-line arch-line--i2c"></span> I2C shared bus (SDA/SCL)</li>
+    </ul>
+    <p class="arch-legend-note">
+      The potentiometer stands in for the FC-28 soil-moisture sensor in the Wokwi simulation.
+    </p>
+  </div>
+</div>
+
+<style>
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .arch-diagram--compact .arch-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .arch-diagram--expanded .arch-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .arch-legend {
+    padding: 0 4px;
+  }
+
+  .arch-caption {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .arch-legend-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .arch-legend-list li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .arch-key {
+    flex: 0 0 18px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  .arch-key--solid {
+    background: rgba(126, 160, 204, 0.14);
+    border: 1px solid rgba(126, 160, 204, 0.6);
+  }
+
+  .arch-key--dashed {
+    background: rgba(126, 160, 204, 0.08);
+    border: 1px dashed rgba(126, 160, 204, 0.5);
+  }
+
+  .arch-line {
+    flex: 0 0 18px;
+    height: 2px;
+    border-radius: 2px;
+  }
+
+  .arch-line--solid {
+    background: rgba(126, 160, 204, 0.6);
+  }
+
+  .arch-line--i2c {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(126, 160, 204, 0.6) 0,
+      rgba(126, 160, 204, 0.6) 4px,
+      transparent 4px,
+      transparent 7px
+    );
+  }
+
+  .arch-legend-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .arch-diagram--compact .arch-legend {
+    display: none;
+  }
+</style>

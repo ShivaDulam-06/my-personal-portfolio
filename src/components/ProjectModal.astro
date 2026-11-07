@@ -1,0 +1,556 @@
+---
+// Reusable project-detail modal. Renders a single <dialog> shell
+// plus an inline script that opens it from any element carrying
+// data-open-project="<anchor>". The project data is emitted as a
+// JSON blob at build time, so both the homepage and the Projects
+// page share one modal with no UI framework or extra dependencies.
+//
+// Accessibility: native <dialog> semantics, Escape to close, visible
+// close button, backdrop-click close (without closing on content
+// click), focus management, focus return to the trigger, background
+// scroll lock, and prefers-reduced-motion support.
+
+import { projects } from '../data/projects';
+import ArchitectureDiagram from './ArchitectureDiagram.astro';
+
+const detailProjects = projects.filter((p) => p.hasDetails);
+const projectData = detailProjects.map((p) => ({
+  id: p.anchor,
+  title: p.title,
+  status: p.status,
+  link: p.link,
+  overview: p.overview,
+  stack: p.stack,
+  simulationNote: p.simulationNote,
+  detail: p.detail,
+}));
+---
+
+<dialog id="project-modal" class="project-modal" aria-labelledby="project-modal-title">
+  <div class="project-modal-backdrop" data-modal-close></div>
+  <div class="project-modal-panel" role="document">
+    <button type="button" class="project-modal-close" data-modal-close aria-label="Close project details">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M4 4 L14 14 M14 4 L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <div class="project-modal-body" id="project-modal-body">
+      {/* Populated by the inline script on open. The static markup
+          below is a fallback / no-JS representation of the featured
+          project so crawlers and SSR see real content. */}
+      {detailProjects.map((project) => (
+        <div class="project-modal-content" data-project-content={project.anchor} hidden={project.anchor !== detailProjects[0]?.anchor}>
+          <div class="modal-visual">
+            <ArchitectureDiagram variant="expanded" />
+          </div>
+
+          <div class="modal-meta">
+            <div class="modal-status">
+              <span class="badge-status badge-status--completed">{project.status}</span>
+              <span class="badge-status badge-status--sim">Wokwi Simulation</span>
+            </div>
+            <h2 id="project-modal-title" class="modal-title">{project.title}</h2>
+          </div>
+
+          {project.overview && (
+            <section class="modal-section">
+              <h3>Overview</h3>
+              <p>{project.overview}</p>
+            </section>
+          )}
+
+          {project.detail?.objectives && (
+            <section class="modal-section">
+              <h3>Objectives</h3>
+              <p>{project.detail.objectives}</p>
+            </section>
+          )}
+
+          {project.detail?.architecture && (
+            <section class="modal-section">
+              <h3>System Architecture</h3>
+              <p>{project.detail.architecture}</p>
+            </section>
+          )}
+
+          {project.detail?.hardwareInterfaces && (
+            <section class="modal-section">
+              <h3>Hardware Components &amp; Interfaces</h3>
+              <p>{project.detail.hardwareInterfaces}</p>
+            </section>
+          )}
+
+          {project.detail?.firmwareImplementation && (
+            <section class="modal-section">
+              <h3>Firmware Implementation</h3>
+              <p>{project.detail.firmwareImplementation}</p>
+            </section>
+          )}
+
+          {project.stack && (
+            <section class="modal-section">
+              <h3>Technology Stack</h3>
+              <dl class="modal-stack">
+                {project.stack.map((group) => (
+                  <div class="modal-stack-row">
+                    <dt>{group.label}</dt>
+                    <dd>{group.items.join(', ')}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
+
+          {project.simulationNote && (
+            <section class="modal-section">
+              <h3>Simulation Limitations &amp; Engineering Considerations</h3>
+              <ul class="modal-disclosures">
+                {project.simulationNote.map((note) => (
+                  <li>{note}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {project.detail?.learningOutcomes && project.detail.learningOutcomes.length > 0 && (
+            <section class="modal-section">
+              <h3>Learning Outcomes &amp; Technical Challenges</h3>
+              <ul class="modal-outcomes">
+                {project.detail.learningOutcomes.map((outcome) => (
+                  <li>{outcome}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {project.link && (
+            <div class="modal-actions">
+              <a href={project.link} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                GitHub Repository <span class="arrow">&rarr;</span>
+              </a>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ projectData }}>
+  (function () {
+    var modal = document.getElementById('project-modal');
+    if (!modal) return;
+    var contents = modal.querySelectorAll('[data-project-content]');
+    var lastFocused = null;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function showContent(id) {
+      contents.forEach(function (node) {
+        var match = node.getAttribute('data-project-content') === id;
+        node.hidden = !match;
+        if (match) {
+          node.id = 'project-modal-active';
+        } else if (node.id === 'project-modal-active') {
+          node.removeAttribute('id');
+        }
+      });
+    }
+
+    function openModal(trigger, id) {
+      lastFocused = trigger;
+      showContent(id);
+      modal.showModal();
+      document.body.style.overflow = 'hidden';
+      // Move focus to the close button once the dialog is visible.
+      var closeBtn = modal.querySelector('.project-modal-close');
+      if (closeBtn) {
+        // Defer to the next frame so the dialog is painted.
+        requestAnimationFrame(function () {
+          closeBtn.focus();
+        });
+      }
+    }
+
+    function closeModal() {
+      if (!modal.open) return;
+      // Animate out, then actually close.
+      modal.classList.add('project-modal--closing');
+      var done = function () {
+        modal.removeEventListener('animationend', done);
+        modal.classList.remove('project-modal--closing');
+        modal.close();
+        document.body.style.overflow = '';
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+          lastFocused.focus();
+          lastFocused = null;
+        }
+      };
+      if (reduceMotion) {
+        done();
+      } else {
+        modal.addEventListener('animationend', done);
+        // Safety timeout in case animationend never fires.
+        setTimeout(done, 400);
+      }
+    }
+
+    // Open triggers — any element carrying data-open-project.
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('[data-open-project]');
+      if (trigger) {
+        e.preventDefault();
+        var id = trigger.getAttribute('data-open-project');
+        openModal(trigger, id);
+      }
+    });
+
+    // Open via keyboard (Enter / Space) on non-button triggers.
+    document.addEventListener('keydown', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-open-project]')) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          var id = e.target.getAttribute('data-open-project');
+          openModal(e.target, id);
+        }
+      }
+    });
+
+    // Close triggers — close button and backdrop.
+    modal.addEventListener('click', function (e) {
+      if (e.target.matches('[data-modal-close]')) {
+        closeModal();
+      }
+    });
+
+    // Escape is handled natively by <dialog>; restore state when it
+    // closes via Escape.
+    modal.addEventListener('close', function () {
+      document.body.style.overflow = '';
+      if (lastFocused && typeof lastFocused.focus === 'function') {
+        lastFocused.focus();
+        lastFocused = null;
+      }
+    });
+
+    // Keep focus inside the dialog while open.
+    modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var focusable = modal.querySelectorAll(
+        'button, a[href], [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  })();
+</script>
+
+<style>
+  .project-modal {
+    border: none;
+    background: transparent;
+    padding: 0;
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    color: var(--text-primary);
+    overflow: hidden;
+  }
+
+  .project-modal::backdrop {
+    background: rgba(8, 11, 16, 0.72);
+    backdrop-filter: blur(2px);
+  }
+
+  .project-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .project-modal-panel {
+    position: relative;
+    z-index: 1;
+    margin: 6vh auto;
+    width: min(720px, 92vw);
+    max-height: 88vh;
+    background: var(--navy-850);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .project-modal-close:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-border);
+    background: rgba(126, 160, 204, 0.08);
+  }
+
+  .project-modal-body {
+    overflow-y: auto;
+    padding: 28px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .project-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .modal-visual {
+    background: rgba(13, 17, 23, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+
+  .modal-meta {
+    padding-right: 40px;
+  }
+
+  .modal-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .badge-status--sim {
+    background: rgba(126, 160, 204, 0.12);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+  }
+
+  .modal-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .modal-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-section h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-section p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .modal-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .modal-stack-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 12px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-stack-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .modal-stack-row dt {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .modal-stack-row dd {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .modal-disclosures,
+  .modal-outcomes {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-disclosures li,
+  .modal-outcomes li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .modal-disclosures li::before,
+  .modal-outcomes li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .modal-actions {
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .modal-actions .arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .modal-actions a:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  /* --- Entrance / exit animations --- */
+  @media (prefers-reduced-motion: no-preference) {
+    .project-modal[open] .project-modal-panel {
+      animation: modal-fade-scale 0.24s ease-out;
+    }
+
+    .project-modal--closing .project-modal-panel {
+      animation: modal-fade-scale-out 0.22s ease-in forwards;
+    }
+
+    @keyframes modal-fade-scale {
+      from {
+        opacity: 0;
+        transform: scale(0.97) translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes modal-fade-scale-out {
+      from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0.97) translateY(8px);
+      }
+    }
+  }
+
+  /* --- Mobile: nearly full-screen slide-up panel --- */
+  @media (max-width: 768px) {
+    .project-modal-panel {
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+      max-height: 100vh;
+      height: 100vh;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .project-modal-body {
+      padding: 20px;
+      padding-top: 56px;
+    }
+
+    .project-modal-close {
+      top: 16px;
+      right: 16px;
+    }
+
+    .modal-stack-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+
+  @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .project-modal[open] .project-modal-panel {
+      animation: modal-slide-up 0.26s ease-out;
+    }
+
+    .project-modal--closing .project-modal-panel {
+      animation: modal-slide-down 0.22s ease-in forwards;
+    }
+
+    @keyframes modal-slide-up {
+      from {
+        opacity: 0.5;
+        transform: translateY(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modal-slide-down {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(100%);
+      }
+    }
+  }
+</style>
