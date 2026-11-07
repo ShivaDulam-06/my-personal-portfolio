@@ -8,6 +8,9 @@ const statusClass = (status: string) => {
   if (status === 'Completed') return 'badge-status--completed';
   return 'badge-status--coming-soon';
 };
+
+const featured = projects.find((p) => p.featured);
+const others = projects.filter((p) => !p.featured);
 ---
 
 <Layout
@@ -22,8 +25,172 @@ const statusClass = (status: string) => {
     </p>
   </div>
 
+  {featured && (
+    <article id={featured.anchor} class="featured-project">
+      <div class="featured-project-grid">
+        <div class="featured-visual">
+          <div class="diagram-frame">
+            <svg
+              viewBox="0 0 360 300"
+              xmlns="http://www.w3.org/2000/svg"
+              role="img"
+              aria-label="Simulation architecture diagram for the ESP32-based Smart Agriculture Monitoring System"
+              class="arch-svg"
+            >
+              <title>Simulation Architecture</title>
+
+              {/* Signal bus lines */}
+              <g stroke="rgba(126,160,204,0.35)" stroke-width="1.2" fill="none">
+                {/* DHT22 -> ESP32 (digital) */}
+                <path d="M70 58 H150 V120" />
+                {/* LDR -> ESP32 (analog) */}
+                <path d="M70 140 H150" />
+                {/* Pot/FC-28 -> ESP32 (analog) */}
+                <path d="M70 222 H150 V160" />
+                {/* I2C bus: ESP32 <-> RTC and LCD */}
+                <path d="M210 120 H300 V58" />
+                <path d="M210 140 H300 V222" />
+                {/* ESP32 -> Relay (digital out) */}
+                <path d="M210 160 H300 V160" stroke-dasharray="3 3" />
+              </g>
+
+              {/* Connection endpoint dots */}
+              <g fill="rgba(126,160,204,0.7)">
+                <circle cx="150" cy="120" r="2.5" />
+                <circle cx="150" cy="140" r="2.5" />
+                <circle cx="150" cy="160" r="2.5" />
+                <circle cx="210" cy="120" r="2.5" />
+                <circle cx="210" cy="140" r="2.5" />
+                <circle cx="210" cy="160" r="2.5" />
+              </g>
+
+              {/* Line labels */}
+              <g font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(155,184,216,0.75)">
+                <text x="96" y="52">digital</text>
+                <text x="96" y="134">analog</text>
+                <text x="90" y="216">analog</text>
+                <text x="232" y="114">I2C</text>
+                <text x="232" y="216">I2C</text>
+                <text x="232" y="154">GPIO</text>
+              </g>
+
+              {/* DHT22 */}
+              <g>
+                <rect x="18" y="42" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+                <text x="44" y="58" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">DHT22</text>
+                <text x="44" y="68" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">temp/humidity</text>
+              </g>
+
+              {/* LDR */}
+              <g>
+                <rect x="18" y="124" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+                <text x="44" y="140" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">LDR</text>
+                <text x="44" y="150" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">ambient light</text>
+              </g>
+
+              {/* Potentiometer (FC-28 proxy) */}
+              <g>
+                <rect x="18" y="206" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+                <text x="44" y="222" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">Pot</text>
+                <text x="44" y="232" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">FC-28 proxy</text>
+              </g>
+
+              {/* ESP32 (center) */}
+              <g>
+                <rect x="150" y="116" width="60" height="48" rx="6" fill="rgba(126,160,204,0.14)" stroke="rgba(126,160,204,0.6)" stroke-width="1.3" />
+                <text x="180" y="138" text-anchor="middle" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#d2d8e0">ESP32</text>
+                <text x="180" y="150" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">firmware</text>
+              </g>
+
+              {/* DS1307 RTC */}
+              <g>
+                <rect x="300" y="42" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+                <text x="326" y="58" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">DS1307</text>
+                <text x="326" y="68" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">RTC</text>
+              </g>
+
+              {/* 20x4 I2C LCD */}
+              <g>
+                <rect x="300" y="206" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" />
+                <text x="326" y="222" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">LCD</text>
+                <text x="326" y="232" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">20x4 I2C</text>
+              </g>
+
+              {/* Relay + pump indicator */}
+              <g>
+                <rect x="300" y="144" width="52" height="32" rx="5" fill="rgba(126,160,204,0.08)" stroke="rgba(126,160,204,0.4)" stroke-width="1" stroke-dasharray="3 2" />
+                <text x="326" y="160" text-anchor="middle" font-family="'Inter', sans-serif" font-size="9" font-weight="500" fill="#d2d8e0">Relay</text>
+                <text x="326" y="170" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#9ba4b5">pump drive</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="diagram-legend">
+            <p class="diagram-caption">Simulation Architecture</p>
+            <ul class="legend-list">
+              <li><span class="legend-key legend-key--solid"></span> Component</li>
+              <li><span class="legend-key legend-key--dashed"></span> Relay output (pump drive)</li>
+              <li><span class="legend-line legend-line--solid"></span> Digital / analog signal</li>
+              <li><span class="legend-line legend-line--i2c"></span> I2C shared bus (SDA/SCL)</li>
+            </ul>
+            <p class="legend-note">
+              The potentiometer stands in for the FC-28 soil-moisture sensor in the Wokwi simulation.
+            </p>
+          </div>
+        </div>
+
+        <div class="featured-info">
+          <div class="featured-info-status">
+            <span class={`badge-status ${statusClass(featured.status)}`}>{featured.status}</span>
+            <span class="badge-status badge-status--sim">Wokwi Simulation</span>
+          </div>
+
+          <h2>{featured.title}</h2>
+
+          <p class="featured-overview">{featured.overview}</p>
+
+          {featured.stack && (
+            <div class="featured-stack">
+              <h3 class="stack-title">Technology Stack</h3>
+              <dl class="stack-grid">
+                {featured.stack.map((group) => (
+                  <div class="stack-row">
+                    <dt>{group.label}</dt>
+                    <dd>{group.items.join(', ')}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+
+          {featured.simulationNote && (
+            <div class="featured-disclosures">
+              <h3 class="stack-title">Simulation Notes</h3>
+              <ul class="disclosure-list">
+                {featured.simulationNote.map((note) => (
+                  <li>{note}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div class="featured-info-actions">
+            <a
+              href={featured.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-outline"
+            >
+              View on GitHub <span class="arrow">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </article>
+  )}
+
   <div class="projects-grid">
-    {projects.map((project) => (
+    {others.map((project) => (
       <article class="project-card">
         <div class="project-header">
           <h3>{project.title}</h3>
@@ -46,6 +213,239 @@ const statusClass = (status: string) => {
 </Layout>
 
 <style>
+  /* --- Featured project (expanded layout) --- */
+  .featured-project {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 32px;
+    scroll-margin-top: calc(var(--header-height) + 16px);
+    transition: border-color 0.2s ease, box-shadow 0.25s ease;
+  }
+
+  .featured-project:hover {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 0 1px var(--accent-border), 0 4px 24px rgba(126, 160, 204, 0.06);
+  }
+
+  .featured-project-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* --- Architecture visual column --- */
+  .featured-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .diagram-frame {
+    background: rgba(13, 17, 23, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .arch-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .diagram-legend {
+    padding: 0 4px;
+  }
+
+  .diagram-caption {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .legend-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .legend-list li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .legend-key {
+    flex: 0 0 18px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  .legend-key--solid {
+    background: rgba(126, 160, 204, 0.14);
+    border: 1px solid rgba(126, 160, 204, 0.6);
+  }
+
+  .legend-key--dashed {
+    background: rgba(126, 160, 204, 0.08);
+    border: 1px dashed rgba(126, 160, 204, 0.5);
+  }
+
+  .legend-line {
+    flex: 0 0 18px;
+    height: 2px;
+    border-radius: 2px;
+  }
+
+  .legend-line--solid {
+    background: rgba(126, 160, 204, 0.6);
+  }
+
+  .legend-line--i2c {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(126, 160, 204, 0.6) 0,
+      rgba(126, 160, 204, 0.6) 4px,
+      transparent 4px,
+      transparent 7px
+    );
+  }
+
+  .legend-note {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* --- Info column --- */
+  .featured-info-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .badge-status--sim {
+    background: rgba(126, 160, 204, 0.12);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+  }
+
+  .featured-info h2 {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+
+  .featured-overview {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 22px;
+  }
+
+  .featured-stack,
+  .featured-disclosures {
+    margin-bottom: 22px;
+  }
+
+  .stack-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+  }
+
+  .stack-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .stack-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 12px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stack-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .stack-row dt {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .stack-row dd {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .disclosure-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .disclosure-list li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .disclosure-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .featured-info-actions {
+    margin-top: 4px;
+  }
+
+  .featured-info-actions .arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .featured-info-actions a:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  /* --- Standard project cards (unchanged) --- */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -127,9 +527,21 @@ const statusClass = (status: string) => {
     transform: translateX(3px);
   }
 
+  @media (max-width: 768px) {
+    .featured-project-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
   @media (max-width: 640px) {
     .projects-grid {
       grid-template-columns: 1fr;
+    }
+
+    .stack-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
     }
   }
 </style>
