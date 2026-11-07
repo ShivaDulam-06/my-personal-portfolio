@@ -9,6 +9,9 @@
 //   description — One or two sentences describing the project
 //   tech        — List of technologies/tools used
 //   status      — "Coming soon" | "In progress" | "Completed"
+//   link        — Optional: URL to this project's own repo/demo.
+//                 If omitted, the card falls back to the general
+//                 GitHub profile link.
 // =================================================================
 
 export interface Project {
@@ -16,9 +19,18 @@ export interface Project {
   description: string;
   tech: string[];
   status: 'Coming soon' | 'In progress' | 'Completed';
+  link?: string;
 }
 
 export const projects: Project[] = [
+  {
+    title: 'IoT-Based Smart Agriculture Monitoring System using DAMS',
+    description:
+      'An ESP32 sensor node (UCT internship project) that reads soil moisture, light level, temperature, and humidity, timestamps each reading via RTC, displays live status on an I2C LCD, and automatically switches a relay-driven water pump when soil moisture crosses a dryness threshold.',
+    tech: ['ESP32', 'Embedded C', 'Sensors', 'I2C', 'RTC'],
+    status: 'Completed',
+    link: 'https://github.com/ShivaDulam-06/upskillcampus',
+  },
   {
     title: 'STM32 Sensor Node',
     description:
