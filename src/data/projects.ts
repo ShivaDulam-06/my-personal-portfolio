@@ -55,6 +55,7 @@ export interface Project {
   stack?: TechGroup[];
   overview?: string;
   simulationNote?: string[];
+  simulationBadge?: boolean;
 }
 
 export const projects: Project[] = [
@@ -68,6 +69,7 @@ export const projects: Project[] = [
     featured: true,
     anchor: 'smart-agriculture',
     hasDetails: true,
+    simulationBadge: true,
     overview:
       'An ESP32-based sensor node built and simulated in Wokwi that samples soil moisture, ambient light, temperature, and humidity, timestamps each reading via a DS1307 RTC, and displays live status on a 20x4 I2C LCD. When the soil reading crosses a dryness threshold, the firmware automatically drives a relay to switch a simulated water pump.',
     detail: {
@@ -96,7 +98,7 @@ export const projects: Project[] = [
       { label: 'Output', items: ['Relay-driven pump', 'Orange LED indicator'] },
     ],
     simulationNote: [
-      'The FC-28 soil-moisture sensor is represented by a potentiometer in the Wokwi simulation — Wokwi has no built-in FC-28 component. Swapping the potentiometer for a real FC-28 probe on physical hardware requires no code changes.',
+      'In the Wokwi simulation, a potentiometer provides an adjustable analog input in place of the FC-28 soil-moisture sensor. The firmware reads and processes this ADC input. Integration with a physical FC-28 sensor has not been validated; actual wiring, voltage compatibility, sensor polarity, and calibration must be verified on hardware.',
       'This version does not implement Wi-Fi or MQTT connectivity. Readings are displayed locally and the pump is controlled by on-device logic only.',
       'This project is simulation-based and should not be represented as physically validated hardware.',
     ],

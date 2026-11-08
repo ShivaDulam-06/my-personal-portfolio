@@ -69,7 +69,9 @@ const featuredTech = featured ? featured.tech.slice(0, 4) : [];
           <div class="featured-card-body">
             <div class="featured-status">
               <span class="badge-status badge-status--completed">Completed</span>
-              <span class="badge-status badge-status--sim">Wokwi Simulation</span>
+              {featured.simulationBadge && (
+                <span class="badge-status badge-status--sim">Wokwi Simulation</span>
+              )}
             </div>
 
             <h2 class="featured-card-title">{featured.title}</h2>
@@ -273,12 +275,6 @@ const featuredTech = featured ? featured.tech.slice(0, 4) : [];
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-  }
-
-  .badge-status--sim {
-    background: rgba(126, 160, 204, 0.12);
-    color: var(--accent);
-    border: 1px solid var(--accent-border);
   }
 
   .featured-card-title {

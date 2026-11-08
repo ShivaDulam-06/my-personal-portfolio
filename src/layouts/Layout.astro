@@ -475,6 +475,12 @@ const canonicalUrl = new URL(normalizedPath, Astro.site).href;
         border: 1px solid rgba(110, 180, 120, 0.25);
       }
 
+      .badge-status--sim {
+        background: rgba(126, 160, 204, 0.12);
+        color: var(--accent);
+        border: 1px solid var(--accent-border);
+      }
+
       /* --- Focus styles for accessibility --- */
       a:focus-visible,
       button:focus-visible {

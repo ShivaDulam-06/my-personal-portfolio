@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { projects } from '../data/projects';
-import { site } from '../data/site';
 import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
 import ProjectModal from '../components/ProjectModal.astro';
 
@@ -52,6 +51,11 @@ const ordered = featured ? [featured, ...others] : others;
                 <h3>{project.title}</h3>
                 <span class={`badge-status ${statusClass(project.status)}`}>{project.status}</span>
               </div>
+              {project.simulationBadge && (
+                <div class="project-card-status-row">
+                  <span class="badge-status badge-status--sim">Wokwi Simulation</span>
+                </div>
+              )}
               <p class="project-desc">{project.description}</p>
               <div class="project-tech">
                 {project.tech.map((t) => (
@@ -69,22 +73,29 @@ const ordered = featured ? [featured, ...others] : others;
               <h3>{project.title}</h3>
               <span class={`badge-status ${statusClass(project.status)}`}>{project.status}</span>
             </div>
+            {project.simulationBadge && (
+              <div class="project-card-status-row">
+                <span class="badge-status badge-status--sim">Wokwi Simulation</span>
+              </div>
+            )}
             <p class="project-desc">{project.description}</p>
             <div class="project-tech">
               {project.tech.map((t) => (
                 <span class="badge">{t}</span>
               ))}
             </div>
-            <div class="project-card-footer">
-              <a
-                href={project.link ?? site.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="github-link"
-              >
-                {project.link ? 'View on GitHub' : 'Follow progress on GitHub'} <span class="arrow">&rarr;</span>
-              </a>
-            </div>
+            {project.link && (
+              <div class="project-card-footer">
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="github-link"
+                >
+                  View on GitHub <span class="arrow">&rarr;</span>
+                </a>
+              </div>
+            )}
           </div>
         )}
       </article>
@@ -175,6 +186,13 @@ const ordered = featured ? [featured, ...others] : others;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .project-card-status-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: -4px;
   }
 
   .view-details {
