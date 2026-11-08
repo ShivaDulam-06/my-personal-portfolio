@@ -69,7 +69,7 @@ export const projects: Project[] = [
     anchor: 'smart-agriculture',
     hasDetails: true,
     overview:
-      'An ESP32-based sensor node built and simulated in Wokwi. The firmware samples a DHT22 for temperature and humidity, an LDR module for ambient light, and a potentiometer that stands in for the FC-28 soil-moisture sensor. Each reading is timestamped by a DS1307 RTC and shown on a 20x4 I2C LCD. When the soil reading crosses a dryness threshold, the ESP32 drives a relay module to switch a simulated water pump, with an orange LED acting as a pump-on indicator.',
+      'An ESP32-based sensor node built and simulated in Wokwi that samples soil moisture, ambient light, temperature, and humidity, timestamps each reading via a DS1307 RTC, and displays live status on a 20x4 I2C LCD. When the soil reading crosses a dryness threshold, the firmware automatically drives a relay to switch a simulated water pump.',
     detail: {
       objectives:
         'Build a self-contained ESP32 sensor node that monitors key agricultural parameters — soil moisture, ambient light, temperature, and humidity — and performs local, on-device control of a water pump without relying on cloud connectivity. The project was developed as a UCT internship submission and simulated end-to-end in Wokwi.',
